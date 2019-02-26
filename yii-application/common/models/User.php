@@ -23,8 +23,8 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED = 0;
-    const STATUS_ACTIVE = 10;
+    // const STATUS_DELETED = 0;
+    // const STATUS_ACTIVE = 10;
 
 
     /**
@@ -50,10 +50,10 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function rules()
     {
-        return [
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
-        ];
+        // return [
+        //     ['status', 'default', 'value' => self::STATUS_ACTIVE],
+        //     ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+        // ];
     }
 
     /**
@@ -61,7 +61,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        // return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return User::find(['id' => $id])->one();
     }
 
     /**
@@ -80,7 +81,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        // return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return User::find(['username' => $username])->one();
     }
 
     /**
@@ -91,14 +93,15 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByPasswordResetToken($token)
     {
-        if (!static::isPasswordResetTokenValid($token)) {
-            return null;
-        }
+        // if (!static::isPasswordResetTokenValid($token)) {
+        //     return null;
+        // }
 
-        return static::findOne([
-            'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
-        ]);
+        // return static::findOne([
+        //     'password_reset_token' => $token,
+        //     'status' => self::STATUS_ACTIVE,
+        // ]);
+        return FALSE;
     }
 
     /**
@@ -109,13 +112,14 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function isPasswordResetTokenValid($token)
     {
-        if (empty($token)) {
-            return false;
-        }
+        // if (empty($token)) {
+        //     return false;
+        // }
 
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
-        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
-        return $timestamp + $expire >= time();
+        // $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        // $expire = Yii::$app->params['user.passwordResetTokenExpire'];
+        // return $timestamp + $expire >= time();
+        return FALSE;
     }
 
     /**
@@ -123,7 +127,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getId()
     {
-        return $this->getPrimaryKey();
+        // return $this->getPrimaryKey();
+        return $this->id;
     }
 
     /**
@@ -131,7 +136,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->auth_key;
+        // return $this->auth_key;
+        return NULL;
     }
 
     /**
@@ -139,7 +145,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->getAuthKey() === $authKey;
+        // return $this->getAuthKey() === $authKey;
+        return FALSE;
     }
 
     /**
@@ -150,7 +157,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return Yii::$app->security->validatePassword($password, $this->password_hash);
+        // return Yii::$app->security->validatePassword($password, $this->password_hash);
+        return $this->password === md5($password);
     }
 
     /**
